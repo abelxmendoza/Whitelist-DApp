@@ -216,8 +216,11 @@ export default function Home() {
         </div>
         <Image 
           className={styles.image}
-          src="./crypto-devs.svg"
+          src="/crypto-devs.svg"
           alt="Picture of the author"
+          width={300}
+          height={300}
+            
         />
 
        
