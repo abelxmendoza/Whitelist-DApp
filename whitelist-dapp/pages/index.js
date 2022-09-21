@@ -1,8 +1,10 @@
+import React from "react";
 import Head from "next/head";
+import Image from 'next/image';
 import styles from "../styles/Home.module.css";
 import Web3Modal from "web3modal";
 import { providers, Contract } from "ethers";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { WHITELIST_CONTRACT_ADDRESS, abi } from "../constants";
 
 export default function Home() {
@@ -105,7 +107,7 @@ export default function Home() {
   /**
    * checkIfAddressInWhitelist: Checks if the address is in whitelist
    */
-  const checkIfAddressInWhitelist = async () => {
+  const checkIfAddressInWhitelist = useCallback(async () => {
     try {
       // We will need the signer later to get the user's address
       // Even though it is a read transaction, since Signers are just special kinds of Providers,
@@ -126,12 +128,14 @@ export default function Home() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
   /*
     connectWallet: Connects the MetaMask wallet
   */
-  const connectWallet = async () => {
+
+    //made some changes here: added useCallback and parentheses 
+  const connectWallet = useCallback(async () => {
     try {
       // Get the provider from web3Modal, which in our case is MetaMask
       // When used for the first time, it prompts the user to connect their wallet
@@ -143,7 +147,7 @@ export default function Home() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [checkIfAddressInWhitelist, getNumberOfWhitelisted]);
 
   /*
     renderButton: Returns a button based on the state of the dapp
@@ -189,12 +193,13 @@ export default function Home() {
       });
       connectWallet();
     }
-  }, [walletConnected]);
+  }, [walletConnected, connectWallet]);
+
 
   return (
     <div>
       <Head>
-        <title>Abel's Blacklist Dapp</title>
+        <title>Abel&apos;s Blacklist Dapp</title>
         <meta name="description" content="Abel's Whitelist-Dapp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -209,9 +214,13 @@ export default function Home() {
           </div>
           {renderButton()}
         </div>
-        <div>
-          <img className={styles.image} src="./crypto-devs.svg" />
-        </div>
+        <Image 
+          className={styles.image}
+          src="./crypto-devs.svg"
+          alt="Picture of the author"
+        />
+
+       
       </div>
 
       <footer className={styles.footer}>
